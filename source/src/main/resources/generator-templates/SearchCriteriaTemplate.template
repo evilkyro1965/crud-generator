@@ -1,0 +1,20 @@
+package com.kyrosoft.ims.model.dto;
+
+public class ${className} extends BaseSearchParameters {
+
+    <#list properties as property>
+    private ${property.propertyType} ${property.propertyName};
+    </#list>
+
+    public ${className}() {}
+
+    <#list properties as property>
+    public ${property.propertyType} get${property.propertyNameCapitalized}() {
+        return ${property.propertyName};
+    }
+
+    public void set${property.propertyNameCapitalized}(${property.propertyType} ${property.propertyName}) {
+        this.${property.propertyName} = ${property.propertyName};
+    }
+    </#list>
+}

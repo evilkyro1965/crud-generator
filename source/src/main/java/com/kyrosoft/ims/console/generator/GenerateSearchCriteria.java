@@ -17,36 +17,21 @@ import java.io.*;
  */
 public class GenerateSearchCriteria {
 
-    private String searchCriteriaSourceDir = "src/main/java/com/kyrosoft/ims/model/dto/";
+    private String searchCriteriaSourceDir = GeneratorConfig.searchCriteriaSourceDir;
 
-    private String templatePath = "/generator-templates";
+    private String templatePath = GeneratorConfig.templatePath;
 
-    private String relativeToSourcePath = "../../";
+    private String relativeToSourcePath = GeneratorConfig.relativeToSourcePath;
 
-    protected String MODEL_PACKAGE = "com.kyrosoft.ims.model.";
+    private String MODEL_PACKAGE = GeneratorConfig.MODEL_PACKAGE;
 
-    /*
-    protected Class<?>[] supportedPrimitives = new Class<?>[] {
-            Boolean.class,
-            Double.class,
-            Enumeration.class,
-            Float.class,
-            Integer.class,
-            Long.class,
-            Short.class,
-            String.class
-    };
-    */
-    protected Class<?>[] supportedPrimitives = new Class<?>[] {
-            Boolean.class,
-            Integer.class,
-            String.class
-    };
-
+    protected Class<?>[] supportedPrimitives = GeneratorConfig.supportedPrimitives;
 
     private Configuration cfg;
 
     private URI templateUri;
+
+    private List<Class<?>> classList = new ArrayList<Class<?>>();
 
     public GenerateSearchCriteria() throws Exception {
         /* ------------------------------------------------------------------------ */
@@ -77,21 +62,8 @@ public class GenerateSearchCriteria {
         // This is usually the case for file output, but not for servlet output.
     }
 
-    public void generateSearchCriteriaFromSourceExample() throws Exception {
-        /* Create a data-model */
-        Map<String, Object> root = new HashMap<String, Object>();
-        List<PropertyWrapper> properties = new ArrayList<PropertyWrapper>();
-        properties.add(new PropertyWrapper("String","name",capitalize("name")));
-        root.put("className", "SearchCriteria");
-        root.put("properties", properties);
-
-        String fileOutput = "output.txt";
-
-        generateSource(root,fileOutput);
-    }
-
+    /*
     public void generateSearchCriteriaFromSourceSimple() throws Exception {
-        /* Create a data-model */
         List<Class<?>> classList = new ArrayList<Class<?>>();
         classList.add(Employee.class);
 
@@ -119,15 +91,24 @@ public class GenerateSearchCriteria {
             generateSource(root,className+".java");
         }
     }
+    */
+
+    public List<Class<?>> getClassList() {
+        return classList;
+    }
+
+    public void setClassList(List<Class<?>> classList) {
+        this.classList = classList;
+    }
 
     public void generateSearchCriteriaFromSource() throws Exception {
         /* Create a data-model */
-        List<Class<?>> classList = new ArrayList<Class<?>>();
-        classList.add(Employee.class);
-
         for (Class<?> clazz : classList) {
             Map<String, Object> root = new HashMap<String, Object>();
             List<PropertyWrapper> properties = new ArrayList<PropertyWrapper>();
+            List<String> imports = new ArrayList<String>();
+            imports.add(MODEL_PACKAGE+"*");
+            imports.add("java.util.*");
 
             String className = clazz.getSimpleName()+"SearchCriteria";
             root.put("className", className);
@@ -143,16 +124,28 @@ public class GenerateSearchCriteria {
                         else if(field.getType().getSimpleName().equals("Boolean")) {
                             generateBooleanSearchProperty(field, properties);
                         }
-                        else if(field.getType().getSimpleName().equals("Integer")) {
+                        else if(
+                                field.getType().getSimpleName().equals("Integer") ||
+                                field.getType().getSimpleName().equals("Long") ||
+                                field.getType().getSimpleName().equals("Float") ||
+                                field.getType().getSimpleName().equals("Double") ||
+                                field.getType().getSimpleName().equals("Short")
+                                ) {
                             generateIntegerSearchProperty(field, properties);
                         }
                     }
                 }
                 else if(field.getType().getName().indexOf(MODEL_PACKAGE) >= 0) {
-
+                    if(field.getType().isEnum()) {
+                        generateBooleanSearchProperty(field, properties);
+                    }
+                }
+                else if(field.getType().getName().equals("java.util.Date")) {
+                    generateIntegerSearchProperty(field, properties);
                 }
             }
             root.put("properties", properties);
+            root.put("imports",imports);
             generateSource(root,className+".java");
         }
     }
@@ -185,7 +178,7 @@ public class GenerateSearchCriteria {
         //Less Then propety
         String ltPropertyType = field.getType().getSimpleName();
         String ltPropertyName = field.getName() + "_lt";
-        String ltPropertyNameCap = capitalize(equalPropertyName);
+        String ltPropertyNameCap = capitalize(ltPropertyName);
         properties.add(new PropertyWrapper(ltPropertyType, ltPropertyName, ltPropertyNameCap));
     }
 
@@ -203,18 +196,6 @@ public class GenerateSearchCriteria {
         String equalPropertyName = field.getName() + "_eq";
         String equalPropertyNameCap = capitalize(equalPropertyName);
         properties.add(new PropertyWrapper(equalPropertyType,equalPropertyName,equalPropertyNameCap));
-
-        //Start with propety
-        String startPropertyType = field.getType().getSimpleName();
-        String startPropertyName = field.getName() + "_start";
-        String startPropertyNameCap = capitalize(startPropertyName);
-        properties.add(new PropertyWrapper(startPropertyType,startPropertyName,startPropertyNameCap));
-
-        //End with propety
-        String endPropertyType = field.getType().getSimpleName();
-        String endPropertyName = field.getName() + "_end";
-        String endPropertyNameCap = capitalize(endPropertyName);
-        properties.add(new PropertyWrapper(endPropertyType,endPropertyName,endPropertyNameCap));
 
         //Like with propety
         String likePropertyType = field.getType().getSimpleName();

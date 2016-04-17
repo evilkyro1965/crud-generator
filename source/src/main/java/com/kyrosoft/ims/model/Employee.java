@@ -1,9 +1,7 @@
 package com.kyrosoft.ims.model;
 
-import javax.persistence.Basic;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by Administrator on 4/15/2016.
@@ -41,6 +39,12 @@ public class Employee extends IdentifiableEntity {
 
     @Basic
     private Boolean isAdmin;
+
+    @Basic
+    private Date lastLogin;
+
+    @Enumerated
+    private EmployeeLevel employeeLevel;
 
     public Employee() {}
 
@@ -122,5 +126,21 @@ public class Employee extends IdentifiableEntity {
 
     public void setAdmin(Boolean admin) {
         isAdmin = admin;
+    }
+
+    public EmployeeLevel getEmployeeLevel() {
+        return employeeLevel;
+    }
+
+    public void setEmployeeLevel(EmployeeLevel employeeLevel) {
+        this.employeeLevel = employeeLevel;
+    }
+
+    public Date getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(Date lastLogin) {
+        this.lastLogin = lastLogin;
     }
 }

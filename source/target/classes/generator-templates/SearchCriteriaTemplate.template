@@ -1,5 +1,9 @@
 package com.kyrosoft.ims.model.dto;
 
+<#list imports as importClass>
+import ${importClass};
+</#list>
+
 public class ${className} extends BaseSearchParameters {
 
     <#list properties as property>

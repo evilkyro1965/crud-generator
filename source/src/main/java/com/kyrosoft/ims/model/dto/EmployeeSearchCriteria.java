@@ -1,37 +1,44 @@
 package com.kyrosoft.ims.model.dto;
 
+import com.kyrosoft.ims.model.*;
+import java.util.*;
+
 public class EmployeeSearchCriteria extends BaseSearchParameters {
 
     private String nik_eq;
-    private String nik_start;
-    private String nik_end;
     private String nik_like;
     private String username_eq;
-    private String username_start;
-    private String username_end;
     private String username_like;
     private String firstname_eq;
-    private String firstname_start;
-    private String firstname_end;
     private String firstname_like;
     private String lastname_eq;
-    private String lastname_start;
-    private String lastname_end;
     private String lastname_like;
     private String mobile_eq;
-    private String mobile_start;
-    private String mobile_end;
     private String mobile_like;
     private String address_eq;
-    private String address_start;
-    private String address_end;
     private String address_like;
     private Integer yearStart_eq;
     private Integer yearStart_ge;
     private Integer yearStart_gt;
     private Integer yearStart_le;
     private Integer yearStart_lt;
+    private Double salary_eq;
+    private Double salary_ge;
+    private Double salary_gt;
+    private Double salary_le;
+    private Double salary_lt;
     private Boolean isAdmin_eq;
+    private Date lastLogin_eq;
+    private Date lastLogin_ge;
+    private Date lastLogin_gt;
+    private Date lastLogin_le;
+    private Date lastLogin_lt;
+    private EmployeeLevel employeeLevel_eq;
+    private Long id_eq;
+    private Long id_ge;
+    private Long id_gt;
+    private Long id_le;
+    private Long id_lt;
 
     public EmployeeSearchCriteria() {}
 
@@ -41,20 +48,6 @@ public class EmployeeSearchCriteria extends BaseSearchParameters {
 
     public void setNik_eq(String nik_eq) {
         this.nik_eq = nik_eq;
-    }
-    public String getNik_start() {
-        return nik_start;
-    }
-
-    public void setNik_start(String nik_start) {
-        this.nik_start = nik_start;
-    }
-    public String getNik_end() {
-        return nik_end;
-    }
-
-    public void setNik_end(String nik_end) {
-        this.nik_end = nik_end;
     }
     public String getNik_like() {
         return nik_like;
@@ -70,20 +63,6 @@ public class EmployeeSearchCriteria extends BaseSearchParameters {
     public void setUsername_eq(String username_eq) {
         this.username_eq = username_eq;
     }
-    public String getUsername_start() {
-        return username_start;
-    }
-
-    public void setUsername_start(String username_start) {
-        this.username_start = username_start;
-    }
-    public String getUsername_end() {
-        return username_end;
-    }
-
-    public void setUsername_end(String username_end) {
-        this.username_end = username_end;
-    }
     public String getUsername_like() {
         return username_like;
     }
@@ -97,20 +76,6 @@ public class EmployeeSearchCriteria extends BaseSearchParameters {
 
     public void setFirstname_eq(String firstname_eq) {
         this.firstname_eq = firstname_eq;
-    }
-    public String getFirstname_start() {
-        return firstname_start;
-    }
-
-    public void setFirstname_start(String firstname_start) {
-        this.firstname_start = firstname_start;
-    }
-    public String getFirstname_end() {
-        return firstname_end;
-    }
-
-    public void setFirstname_end(String firstname_end) {
-        this.firstname_end = firstname_end;
     }
     public String getFirstname_like() {
         return firstname_like;
@@ -126,20 +91,6 @@ public class EmployeeSearchCriteria extends BaseSearchParameters {
     public void setLastname_eq(String lastname_eq) {
         this.lastname_eq = lastname_eq;
     }
-    public String getLastname_start() {
-        return lastname_start;
-    }
-
-    public void setLastname_start(String lastname_start) {
-        this.lastname_start = lastname_start;
-    }
-    public String getLastname_end() {
-        return lastname_end;
-    }
-
-    public void setLastname_end(String lastname_end) {
-        this.lastname_end = lastname_end;
-    }
     public String getLastname_like() {
         return lastname_like;
     }
@@ -154,20 +105,6 @@ public class EmployeeSearchCriteria extends BaseSearchParameters {
     public void setMobile_eq(String mobile_eq) {
         this.mobile_eq = mobile_eq;
     }
-    public String getMobile_start() {
-        return mobile_start;
-    }
-
-    public void setMobile_start(String mobile_start) {
-        this.mobile_start = mobile_start;
-    }
-    public String getMobile_end() {
-        return mobile_end;
-    }
-
-    public void setMobile_end(String mobile_end) {
-        this.mobile_end = mobile_end;
-    }
     public String getMobile_like() {
         return mobile_like;
     }
@@ -181,20 +118,6 @@ public class EmployeeSearchCriteria extends BaseSearchParameters {
 
     public void setAddress_eq(String address_eq) {
         this.address_eq = address_eq;
-    }
-    public String getAddress_start() {
-        return address_start;
-    }
-
-    public void setAddress_start(String address_start) {
-        this.address_start = address_start;
-    }
-    public String getAddress_end() {
-        return address_end;
-    }
-
-    public void setAddress_end(String address_end) {
-        this.address_end = address_end;
     }
     public String getAddress_like() {
         return address_like;
@@ -231,12 +154,47 @@ public class EmployeeSearchCriteria extends BaseSearchParameters {
     public void setYearStart_le(Integer yearStart_le) {
         this.yearStart_le = yearStart_le;
     }
-    public Integer getYearStart_eq() {
+    public Integer getYearStart_lt() {
         return yearStart_lt;
     }
 
-    public void setYearStart_eq(Integer yearStart_lt) {
+    public void setYearStart_lt(Integer yearStart_lt) {
         this.yearStart_lt = yearStart_lt;
+    }
+    public Double getSalary_eq() {
+        return salary_eq;
+    }
+
+    public void setSalary_eq(Double salary_eq) {
+        this.salary_eq = salary_eq;
+    }
+    public Double getSalary_ge() {
+        return salary_ge;
+    }
+
+    public void setSalary_ge(Double salary_ge) {
+        this.salary_ge = salary_ge;
+    }
+    public Double getSalary_gt() {
+        return salary_gt;
+    }
+
+    public void setSalary_gt(Double salary_gt) {
+        this.salary_gt = salary_gt;
+    }
+    public Double getSalary_le() {
+        return salary_le;
+    }
+
+    public void setSalary_le(Double salary_le) {
+        this.salary_le = salary_le;
+    }
+    public Double getSalary_lt() {
+        return salary_lt;
+    }
+
+    public void setSalary_lt(Double salary_lt) {
+        this.salary_lt = salary_lt;
     }
     public Boolean getIsAdmin_eq() {
         return isAdmin_eq;
@@ -244,5 +202,82 @@ public class EmployeeSearchCriteria extends BaseSearchParameters {
 
     public void setIsAdmin_eq(Boolean isAdmin_eq) {
         this.isAdmin_eq = isAdmin_eq;
+    }
+    public Date getLastLogin_eq() {
+        return lastLogin_eq;
+    }
+
+    public void setLastLogin_eq(Date lastLogin_eq) {
+        this.lastLogin_eq = lastLogin_eq;
+    }
+    public Date getLastLogin_ge() {
+        return lastLogin_ge;
+    }
+
+    public void setLastLogin_ge(Date lastLogin_ge) {
+        this.lastLogin_ge = lastLogin_ge;
+    }
+    public Date getLastLogin_gt() {
+        return lastLogin_gt;
+    }
+
+    public void setLastLogin_gt(Date lastLogin_gt) {
+        this.lastLogin_gt = lastLogin_gt;
+    }
+    public Date getLastLogin_le() {
+        return lastLogin_le;
+    }
+
+    public void setLastLogin_le(Date lastLogin_le) {
+        this.lastLogin_le = lastLogin_le;
+    }
+    public Date getLastLogin_lt() {
+        return lastLogin_lt;
+    }
+
+    public void setLastLogin_lt(Date lastLogin_lt) {
+        this.lastLogin_lt = lastLogin_lt;
+    }
+    public EmployeeLevel getEmployeeLevel_eq() {
+        return employeeLevel_eq;
+    }
+
+    public void setEmployeeLevel_eq(EmployeeLevel employeeLevel_eq) {
+        this.employeeLevel_eq = employeeLevel_eq;
+    }
+    public Long getId_eq() {
+        return id_eq;
+    }
+
+    public void setId_eq(Long id_eq) {
+        this.id_eq = id_eq;
+    }
+    public Long getId_ge() {
+        return id_ge;
+    }
+
+    public void setId_ge(Long id_ge) {
+        this.id_ge = id_ge;
+    }
+    public Long getId_gt() {
+        return id_gt;
+    }
+
+    public void setId_gt(Long id_gt) {
+        this.id_gt = id_gt;
+    }
+    public Long getId_le() {
+        return id_le;
+    }
+
+    public void setId_le(Long id_le) {
+        this.id_le = id_le;
+    }
+    public Long getId_lt() {
+        return id_lt;
+    }
+
+    public void setId_lt(Long id_lt) {
+        this.id_lt = id_lt;
     }
 }

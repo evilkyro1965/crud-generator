@@ -1,0 +1,144 @@
+package com.kyrosoft.ims.service.impl;
+
+<#list imports as importClass>
+import ${importClass};
+</#list>
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import java.lang.reflect.Field;
+import java.util.List;
+
+@Service
+@Transactional
+public class BaseSearchServiceImpl implements BaseSearchService {
+
+    @PersistenceContext
+    protected EntityManager entityManager;
+
+    protected BaseSearchServiceImpl() {}
+
+    protected EntityManager getEntityManager() {
+        return entityManager;
+    }
+
+    private static boolean containsColumn(String column, Class<?> type) {
+        if (column.contains(".")) {
+            // JPA does not support complex sorting scheme.
+            return false;
+        } else {
+            while (null != type) {
+                Field[] fields = type.getDeclaredFields();
+                for (Field field : fields) {
+                    if (field.getName().equalsIgnoreCase(column)) {
+                        return true;
+                    }
+                }
+                type = type.getSuperclass();
+            }
+        }
+        return false;
+    }
+
+<#list classWrappers as classWrapper>
+    public SearchResult<${classWrapper.className}> search(${classWrapper.className}SearchCriteria criteria) throws Exception {
+
+        // Set default sorting option
+        // if sortBy is null/empty, or is not a field of the specified type, sort by id
+        if (!StringUtils.hasText(criteria.getSortBy()) || !containsColumn(criteria.getSortBy(), ${classWrapper.className}.class)) {
+            criteria.setSortBy("id");
+        }
+        if (criteria.getSortType() == null) {
+            criteria.setSortType(SortType.ASC);
+        }
+
+        String className = ${classWrapper.className}.class.getName();
+
+        try {
+            StringBuffer sb = new StringBuffer("SELECT e FROM ").append(className).append(" e ");
+            // Generate and append WHERE clause
+            sb.append(generateWhereClause(criteria));
+            // Append ORDER BY clause
+            sb.append(" ORDER BY ").append(criteria.getSortBy()).append(" ").append(criteria.getSortType().name());
+
+            // Create query
+            TypedQuery<${classWrapper.className}> query = getEntityManager().createQuery(sb.toString(), ${classWrapper.className}.class);
+
+            // Populate query parameters
+            populateQueryParameters(query, criteria);
+
+            // set paging options
+            if (criteria.getPageNumber() > 0) {
+                query.setMaxResults(criteria.getPageSize());
+                query.setFirstResult((criteria.getPageNumber() - 1) * criteria.getPageSize());
+            }
+
+            // Execute the query
+            List<${classWrapper.className}> entities = query.getResultList();
+
+            SearchResult<${classWrapper.className}> result = new SearchResult<${classWrapper.className}>();
+            result.setValues(entities);
+
+            if (criteria.getPageNumber() > 0) {
+                sb.delete(0, sb.length());
+                // get total page count
+                sb.append("SELECT COUNT(e) FROM ").append(className).append(" e ");
+                sb.append(generateWhereClause(criteria));
+
+                // Create query
+                TypedQuery<Long> countQuery = getEntityManager().createQuery(sb.toString(), Long.class);
+
+                populateQueryParameters(countQuery, criteria);
+
+                int totalCount = countQuery.getSingleResult().intValue();
+                int totalPageCount = (totalCount + criteria.getPageSize() - 1) / criteria.getPageSize();
+                result.setTotal(totalCount);
+                result.setTotalPages(totalPageCount);
+                result.setPageSize(criteria.getPageSize());
+                result.setPageNumber(criteria.getPageNumber());
+            } else {
+                result.setTotal(entities.size());
+                result.setTotalPages(1);
+                result.setPageSize(entities.size());
+                result.setPageNumber(1);
+            }
+
+            // set sortBy and sortType for result
+            result.setSortBy(criteria.getSortBy());
+            result.setSortType(criteria.getSortType());
+
+            return result;
+        } catch (Exception e) {
+            throw new Exception();
+        }
+    }
+
+    protected String generateWhereClause(${classWrapper.className}SearchCriteria criteria) throws Exception {
+        StringBuffer sb = new StringBuffer("WHERE (1=1)");
+
+    <#list classWrapper.properties as property>
+        if (criteria.get${property.criteriaNameCapitalized}() != null) {
+            sb.append(" AND e.${property.propertyName} ${property.operator} :${property.criteriaName}");
+        }
+
+    </#list>
+        return sb.toString();
+    }
+
+    protected void populateQueryParameters(Query query, ${classWrapper.className}SearchCriteria criteria) throws Exception {
+
+    <#list classWrapper.properties as property>
+        if (criteria.get${property.criteriaNameCapitalized}() != null) {
+            query.setParameter("${property.criteriaName}", criteria.get${property.criteriaNameCapitalized}());
+        }
+
+    </#list>
+    }
+</#list>
+
+}

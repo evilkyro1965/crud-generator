@@ -1,0 +1,13 @@
+package com.kyrosoft.ims.service;
+
+<#list imports as importClass>
+import ${importClass};
+</#list>
+
+public interface BaseSearchService {
+
+<#list classWrappers as classWrapper>
+    public SearchResult<${classWrapper.className}> search(${classWrapper.className}SearchCriteria criteria) throws Exception;
+</#list>
+
+}

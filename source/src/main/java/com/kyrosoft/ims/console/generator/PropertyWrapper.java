@@ -40,4 +40,5 @@ public class PropertyWrapper {
     public void setPropertyNameCapitalized(String propertyNameCapitalized) {
         this.propertyNameCapitalized = propertyNameCapitalized;
     }
+
 }
